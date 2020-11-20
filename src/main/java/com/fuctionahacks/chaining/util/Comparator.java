@@ -7,9 +7,10 @@ import java.util.function.Function;
 public interface Comparator<T> {
     int compare(T t1, T t2);
 
-    static <T, U extends Comparable<U>> Comparator<T> comparing(Function<T, U> keyExtractor) {
-        Objects.requireNonNull(keyExtractor);
-        return (p1, p2) -> keyExtractor.apply(p1).compareTo(keyExtractor.apply(p2));
+    static <T, U extends Comparable<U>> Comparator<T> comparing(Function<T, U> key) {
+        Objects.requireNonNull(key);
+        return (p1, p2) -> key.apply(p1)
+                .compareTo(key.apply(p2));
     }
 
     default Comparator<T> reversed() {
@@ -27,9 +28,9 @@ public interface Comparator<T> {
         };
     }
 
-    default <U extends Comparable<U>> Comparator<T> thenComparing(Function<T,U> keyExtractor) {
-        Objects.requireNonNull(keyExtractor);
-        Comparator<T> other = comparing(keyExtractor);
+    default <U extends Comparable<U>> Comparator<T> thenComparing(Function<T, U> key) {
+        Objects.requireNonNull(key);
+        Comparator<T> other = comparing(key);
         return this.thenComparing(other);
     }
 }
